@@ -1,11 +1,16 @@
 """
-Automação de decisão por valor de solicitação.
+Sistema de decisão para aprovação de solicitações internas.
 
-Este programa recebe o valor e o tipo de uma solicitação
-e define automaticamente seu statuts com base em regras
-de negócio e categorias emergenciais.
+Objetivo:
+    - Automatizar a aprovação ou encaminhamento de solicitações
+      com base em regras de negócio reais.
+    - Reduzir erros manuais e padronizar decisões.
+
+Fluxos previstos:
+    - Valores até 1000 → aprovado automaticamente
+    - Categorias emergenciais → aprovado emergencialmente
+    - Valores acima do limite → encaminhado para análise da gerência
 """
-
 # imports 
 # (não são necessários imports adicionais nesse projeto)
 # constantes (politicas de negócio)
@@ -14,48 +19,67 @@ VALOR_MAX_EMERGENCIA = 5000
 TIPOS_EMERGENCIA = ["despesa_extra", "acidente", "prejuizo"]
 TIPOS_VALIDOS = ["despesa_extra", "acidente", "prejuizo", "operacional", "planejada"]
 
+# ---------------------------
+# REGRA DE NEGÓCIO
+# ---------------------------
 
 def definir_status(valor, tipo_solicitacao):
     """
-    Define o status da solicitação com base no valor e tipo informado.
+    Retorna o status da solicitação com base nas regras de negócio.
+
+    Regras:
+        1. Até LIMITE_APROVACAO → aprovado automaticamente
+        2. Se for emergência e <= VALOR_MAX_EMERGENCIA → aprovado emergencialmente
+        3. Acima disso → encaminhado para análise da gerência
     """
-    if tipo_solicitacao in TIPOS_EMERGENCIA and valor <= VALOR_MAX_EMERGENCIA:
-        return "APROVADA (EMERGÊNCIA)"
-    elif valor <= LIMITE_APROVADO:
-        return "APROVADA"
-    else:
-        return "EM ANÁLISE"
+    # Regra 1: aprovação automática
+    if valor <= LIMITE_APROVADO:
+       return "Aprovada automaticamente"
+    
+    # Regra 2: emergência aprovada
     
 def main():
     while True:
         try:
-           # Entrada de valor
            valor = float(input("Informe o valor da solicitação: "))
 
-           if valor <= 0:
-               print("Erro: o valor deve ser maior que zero. ")
+           #Menu de tipos
+           print("Selecione o tipo da solicitacção")
+           print("1 - Despesa extra")
+           print("2 - Acidente")
+           print("3 - Prejuízo")
+           print("4 - Operacional")
+           print("5 - Planejada")
+
+           tipo_opcao = input("Digite o número correspondente ao tipo: ")
+
+           TIPO_MAPEADO = {
+               "1": "despesa_extra",
+               "2": "acidente",
+               "3": "prejuizo",
+               "4": "operacional",
+               "5": "planejada",
+           }
+
+           # Converte a opção em texto
+           tipo = TIPO_MAPEADO.get(tipo_opcao)
+
+           # Validação do tipo
+           if not tipo:
+               print("⚠ Tipo inválido. Escolha uma opção de 1 a 5.\n")
                continue
            
-           # Entrada do tipo
-           tipo = input( 
-                "Informe o tipo da solicitação"
-                "(despesa_extra, acidente, prejuizo, operacional, planejada): "
-            ).lower()
-           
-           if tipo not in TIPOS_VALIDOS:
-              print("Erro: tipo de solicitação inválido.")
-              continue
-           
-           # Processamento (regra de negócio)
+           # Processamento (chamada da regra de negócio)
            status = definir_status(valor, tipo)
 
-           #saida 
-           print(f"Status da solicitação: {status}")
-           break
+           # Saida 
+           print(f"\nStatus da solicitação: {status}\n")
+           break # Sai do loop após sucesso
 
         except ValueError:
-            print("Erro: informe um valor numérico válido.")
+            print("⚠ Valor inválido. Digite apenas números.\n")
 
+# PONTO DE ENTRADA DO PROGRAMA
 
 if __name__ == "__main__":
     main()
