@@ -34,7 +34,7 @@ Reduzir erros manuais e padronizar decisões operacionais por meio de um script 
 
 ## ▶️ Como Executar
 
-### 1. Clone o repositório
+### 1. Clone o repositório.
 ```bash
 git clone https://github.com/jl-1008/automacao-regra-decisao-python.git
 
