@@ -9,27 +9,32 @@ de negócio e categorias emergenciais.
 # (não são necessários imports adicionais nesse projeto)
 
 # ---------------------------
-# CONSTANTES (políticas da empresa)
+# CONSTANTES (políticas internas / regras de negócio)
 # ---------------------------
+#TIPOS_VALIDOS = ["despesa_extra", "acidente", "prejuizo", "operacional", "planejada"
+
 
 LIMITE_APROVADO = 1000
 VALOR_MAX_EMERGENCIA = 5000
-
 TIPOS_EMERGENCIA = ["despesa_extra", "acidente", "prejuizo"]
-#TIPOS_VALIDOS = ["despesa_extra", "acidente", "prejuizo", "operacional", "planejada"]
 
-# ---------------------------
+# Dicionário de tipos disponíveis no menu
+TIPO_MAPEADO = {
+               "1": "despesa_extra",
+               "2": "acidente",
+               "3": "prejuizo",
+               "4": "operacional",
+               "5": "planejada",
+           }
+
+# ----------------------------------------------------
 # FUNÇÃO DE REGRA DE NEGÓCIO
-# ---------------------------
+# ----------------------------------------------------
 
 def definir_status(valor, tipo_solicitacao):
     """
     Retorna o status da solicitação com base nas regras de negócio.
 
-    Regras:
-        1. Até LIMITE_APROVACAO → aprovado automaticamente
-        2. Se for emergência e <= VALOR_MAX_EMERGENCIA → aprovado emergencialmente
-        3. Acima disso → encaminhado para análise da gerência
     """
     # Regra 1: aprovação automática
     if valor <= LIMITE_APROVADO:
@@ -49,7 +54,9 @@ def definir_status(valor, tipo_solicitacao):
 def main():
     while True:
         try:
-           valor = float(input("Informe o valor da solicitação: "))
+           # Entrada do valor
+           valor = float(input("Informe o valor da solicitação: R$ "))
+           
 
            #Menu de tipos
            print("\nSelecione o tipo da solicitacção")
@@ -61,13 +68,6 @@ def main():
 
            tipo_opcao = input("Digite o número correspondente ao tipo: ")
 
-           TIPO_MAPEADO = {
-               "1": "despesa_extra",
-               "2": "acidente",
-               "3": "prejuizo",
-               "4": "operacional",
-               "5": "planejada",
-           }
 
            # Converte a opção em texto
            tipo = TIPO_MAPEADO.get(tipo_opcao)
@@ -82,11 +82,18 @@ def main():
 
            # Saida 
            print(f"\nStatus da solicitação: {status}\n")
-           break # Sai do loop após sucesso
+           
+
+           # Pergunta se quer continuar 
+           continuar = input ("Deseja avaliar outra solicitação? (s/n):  ").lower()
+           if continuar != "s":
+               print("\nEncerrando o sistema...")
+               break # Sai do loop após sucesso
+
 
         except ValueError:
             print("⚠ Valor inválido. Digite apenas números.\n")
-
+            
 # PONTO DE ENTRADA DO PROGRAMA
 
 if __name__ == "__main__":
