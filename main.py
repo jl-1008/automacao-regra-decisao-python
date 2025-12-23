@@ -1,26 +1,25 @@
 """
-Sistema de decisão para aprovação de solicitações internas.
+Automação de decisão por valor de solicitação.
 
-Objetivo:
-    - Automatizar a aprovação ou encaminhamento de solicitações
-      com base em regras de negócio reais.
-    - Reduzir erros manuais e padronizar decisões.
-
-Fluxos previstos:
-    - Valores até 1000 → aprovado automaticamente
-    - Categorias emergenciais → aprovado emergencialmente
-    - Valores acima do limite → encaminhado para análise da gerência
+Este programa recebe o valor e o tipo de uma solicitação
+e define automaticamente seu status com base em regras
+de negócio e categorias emergenciais.
 """
 # imports 
 # (não são necessários imports adicionais nesse projeto)
-# constantes (politicas de negócio)
-LIMITE_APROVADO = 1000
-VALOR_MAX_EMERGENCIA = 5000
-TIPOS_EMERGENCIA = ["despesa_extra", "acidente", "prejuizo"]
-TIPOS_VALIDOS = ["despesa_extra", "acidente", "prejuizo", "operacional", "planejada"]
 
 # ---------------------------
-# REGRA DE NEGÓCIO
+# CONSTANTES (políticas da empresa)
+# ---------------------------
+
+LIMITE_APROVADO = 1000
+VALOR_MAX_EMERGENCIA = 5000
+
+TIPOS_EMERGENCIA = ["despesa_extra", "acidente", "prejuizo"]
+#TIPOS_VALIDOS = ["despesa_extra", "acidente", "prejuizo", "operacional", "planejada"]
+
+# ---------------------------
+# FUNÇÃO DE REGRA DE NEGÓCIO
 # ---------------------------
 
 def definir_status(valor, tipo_solicitacao):
@@ -37,14 +36,23 @@ def definir_status(valor, tipo_solicitacao):
        return "Aprovada automaticamente"
     
     # Regra 2: emergência aprovada
+    if tipo_solicitacao in TIPOS_EMERGENCIA and valor <= VALOR_MAX_EMERGENCIA:
+        return "Aprovada (EMERGÊNCIA)"
     
+    # Regra 3: análise necessária
+    return "EM ANÁLISE"
+    
+# ---------------------------
+# FUNÇÃO PRINCIPAL (main)
+# ---------------------------
+
 def main():
     while True:
         try:
            valor = float(input("Informe o valor da solicitação: "))
 
            #Menu de tipos
-           print("Selecione o tipo da solicitacção")
+           print("\nSelecione o tipo da solicitacção")
            print("1 - Despesa extra")
            print("2 - Acidente")
            print("3 - Prejuízo")
